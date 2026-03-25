@@ -5,7 +5,7 @@ export default function Hero() {
   const audioRef = useRef(null);
 
   // ✍️ Typing effect (SAFE)
-  const fullText = "It’s only been 15 days…";
+  const fullText = "It’s only been 15 days… but it already feels different";
   const [displayText, setDisplayText] = useState("");
 
   useEffect(() => {
