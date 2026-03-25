@@ -1,25 +1,56 @@
+import { useEffect } from "react";
+import Lenis from "lenis";
+
 import Hero from "./components/Hero";
 import ScrollStory from "./components/ScrollStory";
-import Ending from "./components/Ending";
-import SoftParticles from "./components/SoftParticles";
 import FinalMoment from "./components/FinalMoment";
+import Ending from "./components/Ending";
 
 function App() {
+  useEffect(() => {
+    // 🌊 Smooth scroll (friction feel)
+    const lenis = new Lenis({
+      duration: 1.4, // 🔥 increase for more heavy feel (1.6–1.8)
+      smoothWheel: true,
+      smoothTouch: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // 📳 Mobile vibration on scroll (Android only)
+    let lastVibrate = 0;
+
+    const handleTouchMove = () => {
+      const now = Date.now();
+
+      if (navigator.vibrate && now - lastVibrate > 120) {
+        navigator.vibrate(10); // 🔥 adjust strength (8–20)
+        lastVibrate = now;
+      }
+    };
+
+    window.addEventListener("touchmove", handleTouchMove);
+
+    return () => {
+      lenis.destroy();
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, []);
+
+  const herName = "Ananya"; // 💖 CHANGE THIS
+
   return (
-    <div className="bg-gradient-to-b from-black via-[#0a0a0a] to-black text-white">
-
-      {/* Background Glow */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute w-[500px] h-[500px] bg-pink-500 opacity-20 blur-[120px] rounded-full top-[-100px] left-[-100px] animate-pulse"></div>
-        <div className="absolute w-[400px] h-[400px] bg-purple-500 opacity-20 blur-[120px] rounded-full bottom-[-100px] right-[-100px] animate-pulse"></div>
-      </div>
-
-      <SoftParticles />
+    <div className="bg-black text-white overflow-x-hidden">
 
       <Hero />
       <ScrollStory />
       <FinalMoment />
-      <Ending />
+      <Ending name={herName} />
 
     </div>
   );
